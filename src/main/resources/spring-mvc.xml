@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context  http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/mvc  http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--1、mvc注解驱动-->
+    <mvc:annotation-driven/>
+
+    <!--2、配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <!--3、静态资源权限开放-->
+    <mvc:default-servlet-handler/>
+
+    <!--4、组件扫描  扫描Controller-->
+    <context:component-scan base-package="com.liu.controller"/>
+
+    <!--配置拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/user/*"/>
+            <mvc:mapping path="/role/*"/>
+            <mvc:mapping path="/teacher/*"/>
+            <mvc:mapping path="/course/*"/>
+            <mvc:exclude-mapping path="/user/PasswordLogin"/>
+            <bean class="com.liu.interceptor.PrivilegeInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!--配置异常处理器-->
+    <bean id="exceptionResolver" class="com.liu.exception.MyExceptionResolver"/>
+
+    <!--声明转换器-->
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <bean class="com.liu.converter.DateConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--MVC的注解驱动-->
+    <mvc:annotation-driven conversion-service="conversionService"/>
+
+
+</beans>

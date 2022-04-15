@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--加载properties文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <!--配置数据源-->
+    <bean id="druid" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--配置JDBCTemplate-->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="druid"/>
+    </bean>
+
+    <!--配置RoleService-->
+    <bean id="roleService" class="com.liu.service.impl.RoleServiceImpl">
+        <property name="roleDao" ref="roleDao"/>
+    </bean>
+
+    <!--配置RoleDao-->
+    <bean id="roleDao" class="com.liu.dao.impl.RoleDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <!--配置UserService-->
+    <bean id="userService" class="com.liu.service.impl.UserServiceImpl">
+        <property name="userDao" ref="userDao"/>
+        <property name="roleDao" ref="roleDao"/>
+    </bean>
+
+    <!--配置userDao-->
+    <bean id="userDao" class="com.liu.dao.impl.UserDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <!--配置teacherService-->
+    <bean id="teacherService" class="com.liu.service.impl.TeacherServiceImpl">
+        <property name="teacherDao" ref="teacherDao"/>
+        <property name="courseDao" ref="courseDao"/>
+    </bean>
+
+    <!--配置teacherDao-->
+    <bean id="teacherDao" class="com.liu.dao.impl.TeacherDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <!--配置courseService-->
+    <bean id="courseService" class="com.liu.service.impl.CourseServiceImpl">
+        <property name="courseDao" ref="courseDao"/>
+    </bean>
+
+    <!--配置courseDao-->
+    <bean id="courseDao" class="com.liu.dao.impl.CourseDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <!--配置IPService-->
+    <bean id="ipService" class="com.liu.service.impl.IPServiceImpl">
+        <property name="ipDao" ref="ipDao"/>
+    </bean>
+
+    <!--配置ipDao-->
+    <bean id="ipDao" class="com.liu.dao.impl.IPDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+</beans>
